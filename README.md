@@ -1,36 +1,47 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Power Design Studio
 
-## Getting Started
+A small set of analog power applications engineering tools, built around the core of the
+job: enhancing/debugging analog IC reference circuits, writing datasheets and application
+notes, power delivery network (PDN) analysis and recommendations, and bench validation with
+lab equipment (oscilloscope, power supplies, load, network analyzer).
 
-First, run the development server:
+- **Buck Converter Reference Design** — sizes the inductor and output capacitor from your
+  ripple targets using the standard switching-regulator design equations, and estimates
+  efficiency from conduction, inductor DCR, and switching losses.
+- **PDN Impedance Analysis** — models a decoupling capacitor bank (bulk/mid/small, each as an
+  R-L-C branch) plus board/plane inductance, sweeps impedance vs frequency, and flags where it
+  exceeds a target impedance — the classic PDN "anti-resonance" problem between capacitor
+  decades.
+- **Application Note Generator** — turns your latest Buck and PDN results into a draft
+  markdown write-up (design equations, loss table, recommendations), downloadable as `.md`.
+- **Bench Test Log** — a record of oscilloscope/power-supply/load/network-analyzer
+  measurements taken while validating a design, kept in the browser (no backend).
+
+Every calculation is a pure function in `lib/`, covered by hand-checked example numbers during
+development — there's no backend, database, or account to set up.
+
+## Getting started
 
 ```bash
+npm install
 npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Open http://localhost:3000.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## Project structure
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- `lib/types.ts` — shared types for both studies
+- `lib/complex.ts` — minimal complex-number arithmetic for the PDN impedance sweep
+- `lib/buck.ts`, `lib/buck-data.ts` — buck converter design engine + sample spec
+- `lib/pdn.ts`, `lib/pdn-data.ts` — PDN impedance engine + sample decoupling bank
+- `lib/appnote.ts` — draft application-note generator
+- `lib/storage.ts` — tiny localStorage helper used to carry results between pages
+- `app/*` — dashboard, buck converter, PDN analysis, application note, and bench log pages
 
-## Learn More
+## Disclaimer
 
-To learn more about Next.js, take a look at the following resources:
-
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
-
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
-
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+These are educational reference calculations meant to build intuition for the underlying
+design and analysis methods. They are not a substitute for a full simulation, lab
+characterization, or a vendor's own design tools before committing a design to silicon or a
+board spin.
